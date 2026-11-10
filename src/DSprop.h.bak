@@ -1,0 +1,103 @@
+/*
+ * DSprop.h
+ *
+ *  Created on: 23.05.2024
+ *      Author: owehr
+ */
+
+
+#ifndef DSPROP_H_
+#define DSPROP_H_
+
+#include <EEPROM.h>
+#include <Arduino.h>
+
+#define EEPROMAddr 80 
+
+class DSprop {
+private:
+   // int EEPROMAddr;
+   
+   int readEEPROM(int addr) {
+	  return EEPROM.read(addr) + ((EEPROM.read(addr+1) << 8)&0xFF00);
+   }
+   
+   void writeEEPROM(int addr, int wert) {
+	 EEPROM.write(addr, wert&0xFF);
+	 EEPROM.write(addr + 1, (wert>>8)&0xFF);
+   }
+	
+public:
+	int StartAddr;
+	int StepsToTrack0;
+	int Relaytrack;
+	int Volume;
+	int Speed;
+	int RampLength;
+		
+	DSprop(){
+		StartAddr     = readEEPROM(EEPROMAddr);
+		StepsToTrack0 = readEEPROM(EEPROMAddr+2);
+		Relaytrack    = readEEPROM(EEPROMAddr+4);
+		Volume        = readEEPROM(EEPROMAddr+6);
+		Speed         = readEEPROM(EEPROMAddr+8);
+		RampLength    = readEEPROM(EEPROMAddr+10);
+	};
+	
+    // int getAddr();
+	
+	void saveProps (String s) {
+		if (s.length() > 0) {
+			 const char delemiter = '#';
+			 const int propcount = 6;
+			 int i;
+			 char *p;
+			 char string[128];
+			 String words[propcount];
+			 s.toCharArray(string, sizeof(string));
+			  i = 0;
+			  p = strtok(string, delemiter);
+			  while(p && i < propcount)
+			  {
+				words[i] = p;
+				p = strtok(NULL, delemiter);
+				++i;
+			  }
+
+			  StartAddr     = words[0].toInt();
+			  StepsToTrack0 = words[1].toInt();
+			  Relaytrack    = words[2].toInt();
+			  Volume        = words[3].toInt();
+			  Speed         = words[4].toInt();
+			  RampLength    = words[5].toInt();
+
+			  writeEEPROM (EEPROMAddr,    StartAddr);
+			  writeEEPROM (EEPROMAddr+ 2, StepsToTrack0);
+			  writeEEPROM (EEPROMAddr+ 4, Relaytrack);
+			  writeEEPROM (EEPROMAddr+ 6, Volume);
+			  writeEEPROM (EEPROMAddr+ 8, Speed);
+			  writeEEPROM (EEPROMAddr+10, RampLength);
+
+			  Serial.println(s = "m" + s);
+			  Serial.println("min EEPROM gespeichert");
+			}
+		else Serial.println("mungueltige Werte");
+	};
+	
+	void readProps() {
+		StartAddr     = readEEPROM (EEPROMAddr);
+		StepsToTrack0 = readEEPROM (EEPROMAddr+ 2);
+		Relaytrack    = readEEPROM (EEPROMAddr+ 4);
+		Volume        = readEEPROM (EEPROMAddr+ 6);
+		Speed         = readEEPROM (EEPROMAddr+ 8);
+		RampLength    = readEEPROM (EEPROMAddr+10);
+
+		String s = String(StartAddr)+"#"+String(StepsToTrack0)+"#"+String(Relaytrack)+"#"
+				   +String(Volume)+"#"+String(Speed)+"#"+String(RampLength);
+		Serial.println("m"+s);
+		delay (100);  ///  !!!!!!!!!!!!!!!!!!!!!!
+		Serial.println("#"+s);
+	}
+};
+
+#endif /* DSPROP_H_ */

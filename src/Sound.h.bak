@@ -1,0 +1,47 @@
+#ifndef MYSOUND_H
+#define MYSOUND_H
+
+#include "Arduino.h"
+#include "SoftwareSerial.h"
+#include "DFRobotDFPlayerMini.h"
+
+SoftwareSerial mySoftwareSerial(10, 11);  // RX, TX
+DFRobotDFPlayerMini myDFPlayer;
+
+bool sound;
+bool initDFP;
+
+void setupDFPlayer() {
+	 mySoftwareSerial.begin(9600);
+	 initDFP = myDFPlayer.begin(mySoftwareSerial);
+	 if (initDFP) {
+		  Serial.println();
+		  Serial.println(F("DFPlayer module initialized!"));
+		  myDFPlayer.setTimeOut(500);      // Serial timeout 500ms
+		  myDFPlayer.volume(Prop.Volume);
+		  myDFPlayer.EQ(0);                // Normal equalization
+		  // myDFPlayer.EQ(DFPLAYER_EQ_POP);
+		  // myDFPlayer.EQ(DFPLAYER_EQ_ROCK);
+		  // myDFPlayer.EQ(DFPLAYER_EQ_JAZZ);
+		  // myDFPlayer.EQ(DFPLAYER_EQ_CLASSIC);
+		  // myDFPlayer.EQ(DFPLAYER_EQ_BASS);
+	 }
+	 else {
+	    Serial.println(F("mDFPlayer not initialized:"));
+	   	  }
+}
+
+void soundOn(){
+	sound = true;
+	bitWrite(state2, 4, 0);
+	  myDFPlayer.volume(Prop.Volume);
+	Serial.println("mSound-on");
+}
+
+void soundOff(){
+    sound = false;
+	bitWrite(state2, 4, 1);
+	Serial.println("mSound-off");
+}
+
+#endif
