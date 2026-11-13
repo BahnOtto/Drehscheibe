@@ -51,8 +51,9 @@ void setupStepper()
 	 digitalWrite(relayPin, HIGH);
 
 	 myStepper.attach(stepPin, dirPin);
-	 myStepper.setSpeed( 300 );     //300          // = 60 rpm
-	 myStepper.setRampLen(300);     //600          // 100 steps to achive set speed
+	
+	 myStepper.setSpeed(Prop.Speed);         //300          // = 60 rpm
+	 myStepper.setRampLen(Prop.RampLength);  //600          // 100 steps to achive set speed
 	 myStepper.attachEnable( enaPin, 100, LOW );   // if you want to switch off power when stepper reached position
 }
 

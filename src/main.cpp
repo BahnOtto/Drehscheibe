@@ -9,8 +9,9 @@
 #include "DFRobotDFPlayerMini.h"
 #include "DSprop.h"
 
-const char Vers[] = "Drescheibe Ds01 VSC 250708 BahnOtto 2x";
+const char Vers[] = "Drescheibe Ds02 VSC 261111 BahnOtto 2y";
 //--------------------------------------------------------
+// uint16-t
 
 //Stepper einrichten ( 800 steps / cycle - 1/4 microstep )
 MoToStepper myStepper(800, STEPDIR );
