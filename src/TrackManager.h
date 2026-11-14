@@ -23,7 +23,6 @@ void writeNewposEEPROM(){
 }
 
 void initPositions() {
-	///        unused int x = readEEPROM(6);
 	front[0] = 0;
 	back[0] = 0;
 	float f = 0;
@@ -39,7 +38,6 @@ void initPositions() {
 	}
 	Serial.println("m-initPositions");
 }
-
 
 void listToEEPROM()
 {
@@ -79,9 +77,11 @@ void listPositions() {
 }
 
 void Reset(){
-	Serial.println("R Reset");
+	Serial.println("mR Reset");
  	initPositions();
-  listToEEPROM();
+    listToEEPROM();
+	Serial.println("m- Arduino wird neu gestartet");
+	delay(5000);
 }
 
 void adjustment (char dir, int steps){

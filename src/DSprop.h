@@ -18,8 +18,8 @@ private:
    void writeEEPROM(int addr, int wert) {
 	 EEPROM.write(addr, wert&0xFF);
 	 EEPROM.write(addr + 1, (wert>>8)&0xFF);
-	 }
-	
+   }
+  
 public:
 	int StartAddr;
 	int StepsToTrack0;
@@ -70,6 +70,8 @@ public:
 		writeEEPROM (EEPROMAddr+10, RampLength);
 		Serial.println(s = "m" + s);
 		Serial.println("min EEPROM gespeichert");
+		Serial.println("m- Arduino wird neu gestartet");
+		delay(5000);
 		}
 		else Serial.println("mungueltige Werte");
 	};

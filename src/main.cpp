@@ -9,7 +9,7 @@
 #include "DFRobotDFPlayerMini.h"
 #include "DSprop.h"
 
-const char Vers[] = "Drescheibe Ds02 VSC 261111 BahnOtto 2y";
+const char Vers[] = "Drescheibe Ds02 VSC 261111 BahnOtto 2r";
 //--------------------------------------------------------
 // uint16-t
 
@@ -40,8 +40,13 @@ unsigned int turn180Addr;
 #include "Sound.h"
 #include "TrackManager.h"
 #include "StepperControl.h"
+#include <avr/wdt.h>
 
-//--------------------------------------------------
+void softwareReset() {
+		wdt_enable(WDTO_15MS); // Watchdog auf 15 Millisekunden einstellen
+	while (true) {}        // Warten, bis der Watchdog den Reset auslöst
+}
+
 NmraDcc Dcc;
 void notifyDccAccTurnoutOutput(uint16_t Addr, uint8_t Direction, uint8_t OutputPower) {
 //	unsigned int startAddr = Prop.StartAddr; //229; //225  wahrscheinlich doppelt vgl. Stepper
@@ -89,7 +94,8 @@ void notifyDccAccTurnoutOutput(uint16_t Addr, uint8_t Direction, uint8_t OutputP
 
 
 void setup()
-{
+{   
+     wdt_disable(); // damit keine Endlosschleife entsteht. vgl. DSProp.h
 	 Serial.begin(9600); //19200
 	 delay(200);
 	 Serial.println("setup Start");
@@ -134,6 +140,7 @@ void menu() {
 		 char d1 = data.charAt(0);
 	     switch (d1) {
 	         case 'R':  Reset();
+			 			softwareReset();
 	        	 	 	break;
 	         case 'E':  EEPROMtoList();
 	        			break;
@@ -181,7 +188,9 @@ void menu() {
 			           	break;
 			 case 'v':  Prop.readProps();
 						break;
-			 case 'V':  Prop.saveProps(data.substring(1)); //"#225#1700#12#15#300#300"
+			 case 'V':  Prop.saveProps(data.substring(1)); 
+			 			softwareReset();
+						//"#225#1700#12#15#300#300"
 				 	 	//prop.saveProps("#225#1700#12#15#300#300");
 						break;
 			 default:   Serial.println ("no command");
