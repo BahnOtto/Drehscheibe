@@ -1,4 +1,4 @@
-//Copyright (c) 2025 BahnOtto
+//Copyright (c) 2026 BahnOtto V3
 
 #ifndef MYSOUND_H
 #define MYSOUND_H
