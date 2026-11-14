@@ -24,7 +24,7 @@ const byte movePin    = A1;
 const byte reachedPin = A2;
 const byte dirLedPin  = A4;
 
-// Steppermodul TMC 2208 ----------------------------------
+// Steppermodul TMC2208 no TMC2209----------------------------------
 #define MOTOR_FULL_STEPS_PER_REVOLUTION 200
 #define REDUCTION_GEARBOX_RATIO 1
 #define STEPS_PER_REVOLUTION (MOTOR_FULL_STEPS_PER_REVOLUTION * REDUCTION_GEARBOX_RATIO)
