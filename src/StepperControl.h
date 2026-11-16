@@ -30,7 +30,7 @@ const byte dirLedPin  = A4;
 #define STEPS_PER_REVOLUTION (MOTOR_FULL_STEPS_PER_REVOLUTION * REDUCTION_GEARBOX_RATIO)
 #define FULL_TURN_STEPS (STEPS_PER_REVOLUTION * 4)  // 1/4  steps - MS1=OFF, MS2=ON,  MS3=OFF
 
-//#define MAX_TURNOUT_POSITIONS  48 //Otto sollte verwendet werden
+//#define MAX_TURNOUT_POSITIONS  48   // Otto sollte verwendet werden
 //#define POSITION_01_DCC_ADDRESS 225 // +  200 !!!!!!!!!!!!!!!!
 
 #define HALF_TURN_STEPS (FULL_TURN_STEPS / 2)
@@ -95,13 +95,13 @@ void calibrate() {
     while ( myStepper.moving() );
 
     Serial.println("mto track 0");
-    myStepper.setSpeed(150 );    //150 200
-    myStepper.setRampLen(100 ); //100 300
+    myStepper.setSpeed(Prop.Speed * 0.5);        //150 200 ?????
+    myStepper.setRampLen(Prop.Speed*0.5 );      //100 300 ????? ist das nötig
 	myStepper.move(Prop.StepsToTrack0);
 	while ( myStepper.moving() );
 	myStepper.setZero();
-    myStepper.setRampLen(300 ); //400 600
-	myStepper.setSpeed(300);
+    myStepper.setRampLen(Prop.RampLength); //400 600
+	myStepper.setSpeed(Prop.Speed);
 	pos = 0;
 	lastpos = 0;
     writeEEPROM(lastposAddr, lastpos);
