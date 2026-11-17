@@ -19,12 +19,12 @@ MoToStepper myStepper(800, STEPDIR );
 #define DCC_PIN 2
 DSprop Prop;
 
-int  front  [49];
-int  back   [49];
+uint16_t  front  [49];   //48???
+uint16_t  back   [49];
 
 const int lastposAddr = 50;
-int pos;
-int lastpos;
+uint16_t pos;
+uint16_t lastpos;
 bool noTurn = false;
 bool isMoving = false;
 byte state1;
@@ -43,8 +43,11 @@ unsigned int turn180Addr;
 #include <avr/wdt.h>
 
 void softwareReset() {
-		wdt_enable(WDTO_15MS); // Watchdog auf 15 Millisekunden einstellen
-	while (true) {}        // Warten, bis der Watchdog den Reset auslöst
+	// asm nur bei altem Bootloader
+	asm volatile ("  jmp 0");
+	// der Watchdog funktioniert nur mit dem neuen Bootloader 
+	//	wdt_enable(WDTO_15MS); // Watchdog auf 15 Millisekunden einstellen
+	// while (true) {}            // Warten, bis der Watchdog den Reset auslöst
 }
 
 NmraDcc Dcc;
@@ -211,14 +214,9 @@ void loop()
 	 bitWrite(state2, 1, 0);
 	 isMoving = true;
     }
-
-//   if (noTurn == true) {
-//	   Serial.println (noTurn);
-//   }
-
    if (
-		   (isMoving and myStepper.moving() == 0) or (noTurn and myStepper.moving() == 0) )
-		   //Klammer entfernt ....!!
+	  (isMoving and myStepper.moving() == 0) or (noTurn and myStepper.moving() == 0) )
+		//Klammer entfernt ....!!
 	   {
        isMoving = false;
        setTime = setReached();
