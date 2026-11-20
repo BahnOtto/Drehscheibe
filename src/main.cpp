@@ -1,4 +1,4 @@
-// Copyright (c) 2025 BahnOtto
+// Copyright (c) 2026 BahnOtto
 
 #include "Arduino.h"
 #include <NmraDcc.h>
@@ -9,7 +9,7 @@
 #include "DFRobotDFPlayerMini.h"
 #include "DSprop.h"
 
-const char Vers[] = "Drescheibe Ds02 VSC 261111 BahnOtto 2r";
+const char Vers[] = "Drescheibe Ds02 VSC 261111 BahnOtto 2n";
 //--------------------------------------------------------
 // uint16-t
 
@@ -47,23 +47,19 @@ void softwareReset() {
 	asm volatile ("  jmp 0");
 	// der Watchdog funktioniert nur mit dem neuen Bootloader 
 	//	wdt_enable(WDTO_15MS); // Watchdog auf 15 Millisekunden einstellen
-	// while (true) {}            // Warten, bis der Watchdog den Reset auslöst
+	// while (true) {}         // Warten, bis der Watchdog den Reset auslöst
 }
 
 NmraDcc Dcc;
 void notifyDccAccTurnoutOutput(uint16_t Addr, uint8_t Direction, uint8_t OutputPower) {
-//	unsigned int startAddr = Prop.StartAddr; //229; //225  wahrscheinlich doppelt vgl. Stepper
 	startAddr      = Prop.StartAddr; //229; //225  wahrscheinlich doppelt vgl. Stepper
     soundAddr      = startAddr;      //225
-    firstTrackAddr = startAddr + 4;  // 229
+    firstTrackAddr = startAddr + 4;  //229
     calibrateAddr  = startAddr + 2;
     turn180Addr    = startAddr + 1;
 
-
 	int tpos = 0;
-    //if (Addr == 225) { // ??
     if (Addr == soundAddr) { // ??
-//    	Serial.println(startAddr);
     	if (OutputPower == 0) {
     		soundOff();
     		delay(800); }
@@ -80,13 +76,11 @@ void notifyDccAccTurnoutOutput(uint16_t Addr, uint8_t Direction, uint8_t OutputP
 		calibrate();
 	}
 
-//	if ((Addr >= firstTrackAddr) and (Addr <= firstTrackAddr+24) and (OutputPower == 0) ) {
 	if ((Addr >= firstTrackAddr) and (Addr <= firstTrackAddr+24) and (OutputPower == 0) ) {
-
 		Serial.println();
 		Serial.print(" A "); Serial.print (Addr);
 		Serial.print(" D "); Serial.print (Direction);
-		tpos = 2 * (Addr - firstTrackAddr); //???????????????????????????????????????????????
+		tpos = 2 * (Addr - firstTrackAddr); 
 		if (Direction == 1) tpos = tpos+1;
 		Serial.print(" tpos ");	Serial.println(tpos);
 		Serial.println(" --------------------");
@@ -94,10 +88,7 @@ void notifyDccAccTurnoutOutput(uint16_t Addr, uint8_t Direction, uint8_t OutputP
     }
 }
 
-
-
-void setup()
-{   
+void setup() {   
      wdt_disable(); // damit keine Endlosschleife entsteht. vgl. DSProp.h
 	 Serial.begin(9600); //19200
 	 delay(200);
@@ -194,29 +185,23 @@ void menu() {
 			 case 'V':  Prop.saveProps(data.substring(1)); 
 			 			softwareReset();
 						//"#225#1700#12#15#300#300"
-				 	 	//prop.saveProps("#225#1700#12#15#300#300");
 						break;
 			 default:   Serial.println ("no command");
 				 	 	break;
 	     }
 	  }
-
 }
 
 
-void loop()
-{
+void loop() {
    Dcc.process();
    menu();
-
    if (myStepper.moving() > 0) {
-   	 digitalWrite(movePin, 0);
-	 bitWrite(state2, 1, 0);
-	 isMoving = true;
+		digitalWrite(movePin, 0);
+		bitWrite(state2, 1, 0);
+		isMoving = true;
     }
-   if (
-	  (isMoving and myStepper.moving() == 0) or (noTurn and myStepper.moving() == 0) )
-		//Klammer entfernt ....!!
+   if ((isMoving and myStepper.moving() == 0) or (noTurn and myStepper.moving() == 0) )
 	   {
        isMoving = false;
        setTime = setReached();
@@ -224,8 +209,7 @@ void loop()
        delay(200);
        Serial.print ((String) "msetReached lastPos " + lastpos + "\n"); //???????????????
    }
-
-   if (digitalRead(dirInPin) == HIGH) {
+   if (digitalRead(dirPin) == HIGH) {
    	  bitWrite(state2, 0, 1);
    	  digitalWrite (dirLedPin, HIGH);
    	  }

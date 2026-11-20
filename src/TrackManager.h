@@ -1,8 +1,7 @@
-// Copyright (c) 2025 BahnOtto
+// Copyright (c) 2026 BahnOtto
 
 #ifndef TrackManager_H
 #define TrackManager_H
-
 
 #include "Arduino.h"
 
@@ -10,13 +9,12 @@ int readEEPROM(int addr) {
 	return EEPROM.read(addr) + ((EEPROM.read(addr+1) << 8)&0xFF00);
 }
 
-void writeEEPROM(int addr, int wert)
-{
+void writeEEPROM(int addr, int wert) {
   EEPROM.write(addr, wert&0xFF);
   EEPROM.write(addr + 1, (wert>>8)&0xFF);
 }
 
-void writeNewposEEPROM(){
+void writeNewposEEPROM() {
    Serial.print((String) "m " +pos + " " + front[pos] + " : " + back[pos] + "   saved\n");
    writeEEPROM(pos * 4 + 100, front[pos]);
    writeEEPROM(pos * 4 + 100+ 2, back[pos]);
@@ -25,11 +23,11 @@ void writeNewposEEPROM(){
 void initPositions() {
 	front[0] = 0;
 	back[0] = 0;
-	float f = 0;
-	for(int i = 0; i < 49; i++)  {   //<
-		f = i * 333.333; //800 * 20 : 48 !!!!
-		front[i] = f;
-		back[i] =  f;
+	uint16_t p = 0;
+	for(int i = 0; i < 49; i++)  {   
+		p = i * 333.333; //800 * 20 : 48 !!!!
+		front[i] = p;
+		back[i] =  p;
 		Serial.print(i);
 		Serial.print(F(" Front: "));
 		Serial.print(front[i]);
@@ -39,8 +37,7 @@ void initPositions() {
 	Serial.println("m-initPositions");
 }
 
-void listToEEPROM()
-{
+void listToEEPROM() {
 	int  e = 100;
 	for(int i = 0; i < 49; i++)
 	{
@@ -53,23 +50,18 @@ void listToEEPROM()
 	Serial.println("m-listToEEPROM");
 }
 
-void EEPROMtoList(){
+void EEPROMtoList() {
 	int e = 100;
-	int tmp;
-	for(int i = 0; i < 49; i++)
-	{
-		tmp = e;
+	for(int i = 0; i < 49; i++) {
 		front[i] = readEEPROM(e);
 		e = e + 2;
 		back[i]  = readEEPROM(e);
 		e = e + 2;
-		Serial.print((String)i+" "+tmp+" Front: "+front[i]+" Back: "+back[i]+"\n");
+		Serial.print((String)i+" "+" Front: "+front[i]+" Back: "+back[i]+"\n");
 	}
 	Serial.println("EEPROMtoList");
 }
 void listPositions() {
-//	Serial.println("mlistPositions");
-//	delay(100);
 	for(int i = 0; i < 49; i++) {
     	delay(50);  //30 geht 20 nicht
 		Serial.print((String)"m"+i+" Front: "+front[i]+" Back: "+back[i]+"\r\n"); //\n
